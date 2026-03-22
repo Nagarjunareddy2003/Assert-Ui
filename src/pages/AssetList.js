@@ -1,49 +1,39 @@
 import { useEffect, useState } from "react";
 import API from "../services/api";
 import { useNavigate } from "react-router-dom";
-export default function AssetList(){
 
-  const [assets,setAssets] = useState([]);
-const navigate = useNavigate();
-  useEffect(()=>{
+export default function AssetList() {
+
+  const [assets, setAssets] = useState([]);
+  const navigate = useNavigate();
+
+  useEffect(() => {
     loadAssets();
-  },[]);
+  }, []);
 
-  const loadAssets = async()=>{
-    try{
+  const loadAssets = async () => {
+    try {
       const res = await API.get("/assets/getallassert");
       setAssets(res.data);
-    }
-    catch(err){
+    } catch (err) {
       console.log(err);
     }
-  }
+  };
 
   // ✅ Delete Asset
-const deleteAsset = async(id)=>{
-  try{
+  const deleteAsset = async (id) => {
+    try {
+      await API.delete(`/assets/deleteby/${id}`);
+      alert("Asset Deleted Successfully");
+      loadAssets();
+    } catch (err) {
+      console.log(err);
+      alert("Delete Failed");
+    }
+  };
 
-    await API.delete(`/assets/deleteby/${id}`);
-
-    alert("Asset Deleted Successfully");
-
-    loadAssets();
-
-  }
-  catch(err){
-    console.log(err);
-    alert("Delete Failed");
-  }
-}
-
-
-  // ✅ Update Asset (Redirect to update page later)
-  const updateAsset = (id)=>{
-    alert("Update Feature Coming Soon for ID : " + id);
-  }
-
-  return(
-    <div style={{padding:"40px"}}>
+  return (
+    <div style={{ padding: "40px" }}>
 
       <h2>Asset List</h2>
 
@@ -61,9 +51,8 @@ const deleteAsset = async(id)=>{
         </thead>
 
         <tbody>
-
           {
-            assets.map(asset=>(
+            assets.map((asset) => (
               <tr key={asset.id}>
 
                 <td>{asset.id}</td>
@@ -74,13 +63,11 @@ const deleteAsset = async(id)=>{
 
                 <td>
 
-                 <button onClick={()=>navigate(`/updateasset/${asset.id}`)}>
-Update
-</button>
+                  <button onClick={() => navigate(`/updateasset/${asset.id}`)}>
+                    Update
+                  </button>
 
-                  <button 
-                    onClick={()=>deleteAsset(asset.id)}
-                  >
+                  <button onClick={() => deleteAsset(asset.id)}>
                     Delete
                   </button>
 
@@ -89,11 +76,10 @@ Update
               </tr>
             ))
           }
-
         </tbody>
 
       </table>
 
     </div>
-  )
+  );
 }
